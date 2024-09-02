@@ -57,6 +57,19 @@ void ReleaseList(void) {
     g_pHeadNode = NULL;
 }
 
+TODODATA* SearchByTask(const char* pszTask) {
+    TODODATA *pTmp = g_pHeadNode;
+    while (pTmp != NULL) {
+        if (strcmp(pszTask, pTmp->task) == 0) {
+            printf("Found: [%p] %s, %s [%p]\n",
+                pTmp, pTmp->task, pTmp->due, pTmp->pNext);
+            return pTmp;
+        }
+        pTmp = pTmp->pNext;
+    }
+    return NULL;
+}
+
 int main() {
     AddLast("Task 4", "2024-09-04");
     AddLast("Task 5", "2024-09-05");
@@ -71,6 +84,13 @@ int main() {
             pTmp, pTmp->task, pTmp->due, pTmp->pNext);
         pTmp = pTmp->pNext;
     }
+
+    SearchByTask("Task 6");
+    SearchByTask("Task 5");
+    SearchByTask("Task 4");
+    SearchByTask("Task 3");
+    SearchByTask("Task 2");
+    SearchByTask("Task 1");
 
     ReleaseList();
 
