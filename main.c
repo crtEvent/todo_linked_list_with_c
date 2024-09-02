@@ -10,7 +10,7 @@ typedef struct TODODATA {
 
 TODODATA *g_pHeadNode = NULL;
 
-void AddNewNode(const char *pszTask, const char *pszDue) {
+void AddFirst(const char *pszTask, const char *pszDue) {
     TODODATA *pNewNode = (TODODATA *)malloc(sizeof(TODODATA));
     strcpy(pNewNode->task, pszTask);
     strcpy(pNewNode->due, pszDue);
@@ -21,6 +21,23 @@ void AddNewNode(const char *pszTask, const char *pszDue) {
     } else {
         pNewNode->pNext = g_pHeadNode;
         g_pHeadNode = pNewNode;
+    }
+}
+
+void AddLast(const char *pszTask, const char *pszDue) {
+    TODODATA *pNewNode = (TODODATA *)malloc(sizeof(TODODATA));
+    strcpy(pNewNode->task, pszTask);
+    strcpy(pNewNode->due, pszDue);
+    pNewNode->pNext = NULL;
+
+    if (g_pHeadNode == NULL) {
+        g_pHeadNode = pNewNode;
+    } else {
+         TODODATA *pTail = g_pHeadNode;
+         while (pTail->pNext != NULL) {
+            pTail = pTail->pNext;
+         }
+         pTail->pNext = pNewNode;
     }
 }
 
@@ -41,9 +58,12 @@ void ReleaseList(void) {
 }
 
 int main() {
-    AddNewNode("Task 1", "2024-09-01");
-    AddNewNode("Task 2", "2024-09-02");
-    AddNewNode("Task 3", "2024-09-03");
+    AddLast("Task 4", "2024-09-04");
+    AddLast("Task 5", "2024-09-05");
+    AddLast("Task 6", "2024-09-06");
+    AddFirst("Task 3", "2024-09-03");
+    AddFirst("Task 2", "2024-09-02");
+    AddFirst("Task 1", "2024-09-01");
 
     TODODATA *pTmp = g_pHeadNode;
     while (pTmp != NULL) {
