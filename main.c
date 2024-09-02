@@ -24,9 +24,26 @@ void AddNewNode(const char *pszTask, const char *pszDue) {
     }
 }
 
+void ReleaseList(void) {
+    TODODATA *pTmp = g_pHeadNode;
+    TODODATA *pDelete;
+    while (pTmp != NULL) {
+        pDelete = pTmp;
+        pTmp = pTmp->pNext;
+
+        printf("Delete: [%p] %s, %s [%p]\n", 
+            pDelete, pDelete->task, pDelete->due, pDelete->pNext);
+
+        free(pDelete);
+    }
+
+    g_pHeadNode = NULL;
+}
+
 int main() {
     AddNewNode("Task 1", "2024-09-01");
     AddNewNode("Task 2", "2024-09-02");
+    AddNewNode("Task 3", "2024-09-03");
 
     TODODATA *pTmp = g_pHeadNode;
     while (pTmp != NULL) {
@@ -34,5 +51,8 @@ int main() {
             pTmp, pTmp->task, pTmp->due, pTmp->pNext);
         pTmp = pTmp->pNext;
     }
+
+    ReleaseList();
+
     return 0;
 }
