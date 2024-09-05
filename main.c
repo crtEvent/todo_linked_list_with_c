@@ -41,6 +41,25 @@ void AddLast(const char *pszTask, const char *pszDue) {
     }
 }
 
+void PrintList() {
+    printf("List:\n");
+    TODODATA *pTmp = g_pHeadNode;
+    
+    if (pTmp == NULL) {
+        printf("\tList is empty\n");
+        return;
+    }
+
+    int count = 0;
+    while (pTmp != NULL) {
+        count++;
+        printf("\t[%p] %s, %s [%p]\n", 
+            pTmp, pTmp->task, pTmp->due, pTmp->pNext);
+        pTmp = pTmp->pNext;
+    }
+    printf("\t%d Tasks\n", count);
+}
+
 void ReleaseList(void) {
     TODODATA *pTmp = g_pHeadNode;
     TODODATA *pDelete;
@@ -98,12 +117,7 @@ int main() {
     AddFirst("Task 2", "2024-09-02");
     AddFirst("Task 1", "2024-09-01");
 
-    TODODATA *pTmp = g_pHeadNode;
-    while (pTmp != NULL) {
-        printf("[%p] %s, %s [%p]\n", 
-            pTmp, pTmp->task, pTmp->due, pTmp->pNext);
-        pTmp = pTmp->pNext;
-    }
+    PrintList();
 
     SearchByTask("Task 6");
     SearchByTask("Task 5");
@@ -116,14 +130,12 @@ int main() {
     RemoveByTask("Task 1");
     RemoveByTask("Task 3");
 
-    TODODATA *pTmp1 = g_pHeadNode;
-    while (pTmp1 != NULL) {
-        printf("[%p] %s, %s [%p]\n", 
-            pTmp1, pTmp1->task, pTmp1->due, pTmp1->pNext);
-        pTmp1 = pTmp1->pNext;
-    }
+    PrintList();
 
-    // ReleaseList();
+    ReleaseList();
 
+    PrintList();
+
+    printf("Done\n");
     return 0;
 }
