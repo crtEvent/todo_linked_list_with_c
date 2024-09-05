@@ -57,6 +57,26 @@ void ReleaseList(void) {
     g_pHeadNode = NULL;
 }
 
+void RemoveByTask(const char *pszTask) {
+    TODODATA *pCurrent = g_pHeadNode;
+    TODODATA *pPrev = NULL;
+    while (pCurrent != NULL) {
+        if (strcmp(pszTask, pCurrent->task) == 0) {
+            if (pPrev == NULL) {
+                g_pHeadNode = pCurrent->pNext;
+            } else {
+                pPrev->pNext = pCurrent->pNext;
+            }
+            printf("Delete: [%p] %s, %s [%p]\n", 
+                pCurrent, pCurrent->task, pCurrent->due, pCurrent->pNext);
+            free(pCurrent);
+            return;
+        }
+        pPrev = pCurrent;
+        pCurrent = pCurrent->pNext;
+    }
+}
+
 TODODATA* SearchByTask(const char* pszTask) {
     TODODATA *pTmp = g_pHeadNode;
     while (pTmp != NULL) {
@@ -92,7 +112,18 @@ int main() {
     SearchByTask("Task 2");
     SearchByTask("Task 1");
 
-    ReleaseList();
+    RemoveByTask("Task 5");
+    RemoveByTask("Task 1");
+    RemoveByTask("Task 3");
+
+    TODODATA *pTmp1 = g_pHeadNode;
+    while (pTmp1 != NULL) {
+        printf("[%p] %s, %s [%p]\n", 
+            pTmp1, pTmp1->task, pTmp1->due, pTmp1->pNext);
+        pTmp1 = pTmp1->pNext;
+    }
+
+    // ReleaseList();
 
     return 0;
 }
