@@ -8,20 +8,15 @@ typedef struct TODODATA {
     struct TODODATA *pNext;
 } TODODATA;
 
-TODODATA *g_pHeadNode = NULL;
+// TODODATA *g_pHeadNode = NULL;
+TODODATA g_HeadNode = { "__Dummy__", "0000-00-00" };
 
 void AddFirst(const char *pszTask, const char *pszDue) {
     TODODATA *pNewNode = (TODODATA *)malloc(sizeof(TODODATA));
     strcpy(pNewNode->task, pszTask);
     strcpy(pNewNode->due, pszDue);
-    pNewNode->pNext = NULL;
-
-    if (g_pHeadNode == NULL) {
-        g_pHeadNode = pNewNode;
-    } else {
-        pNewNode->pNext = g_pHeadNode;
-        g_pHeadNode = pNewNode;
-    }
+    pNewNode->pNext = g_HeadNode.pNext;
+    g_HeadNode.pNext = pNewNode;
 }
 
 void AddLast(const char *pszTask, const char *pszDue) {
@@ -30,20 +25,16 @@ void AddLast(const char *pszTask, const char *pszDue) {
     strcpy(pNewNode->due, pszDue);
     pNewNode->pNext = NULL;
 
-    if (g_pHeadNode == NULL) {
-        g_pHeadNode = pNewNode;
-    } else {
-         TODODATA *pTail = g_pHeadNode;
-         while (pTail->pNext != NULL) {
-            pTail = pTail->pNext;
-         }
-         pTail->pNext = pNewNode;
+    TODODATA *pTail = &g_HeadNode;
+    while (pTail->pNext != NULL) {
+        pTail = pTail->pNext;
     }
+    pTail->pNext = pNewNode;
 }
 
 void PrintList() {
     printf("List:\n");
-    TODODATA *pTmp = g_pHeadNode;
+    TODODATA *pTmp = g_HeadNode.pNext;
     
     if (pTmp == NULL) {
         printf("\tList is empty\n");
@@ -61,7 +52,7 @@ void PrintList() {
 }
 
 void ReleaseList(void) {
-    TODODATA *pTmp = g_pHeadNode;
+    TODODATA *pTmp = g_HeadNode.pNext;
     TODODATA *pDelete;
     while (pTmp != NULL) {
         pDelete = pTmp;
@@ -73,31 +64,26 @@ void ReleaseList(void) {
         free(pDelete);
     }
 
-    g_pHeadNode = NULL;
+    g_HeadNode.pNext = NULL;
 }
-
 void RemoveByTask(const char *pszTask) {
-    TODODATA *pCurrent = g_pHeadNode;
-    TODODATA *pPrev = NULL;
-    while (pCurrent != NULL) {
-        if (strcmp(pszTask, pCurrent->task) == 0) {
-            if (pPrev == NULL) {
-                g_pHeadNode = pCurrent->pNext;
-            } else {
-                pPrev->pNext = pCurrent->pNext;
-            }
+    TODODATA *pPrev = &g_HeadNode;
+    while (pPrev->pNext != NULL) {
+         if (strcmp(pszTask, pPrev->pNext->task) == 0) {
+            TODODATA *pTmp = pPrev->pNext->pNext;
             printf("Delete: [%p] %s, %s [%p]\n", 
-                pCurrent, pCurrent->task, pCurrent->due, pCurrent->pNext);
-            free(pCurrent);
+                pPrev->pNext, pPrev->pNext->task, pPrev->pNext->due, pPrev->pNext->pNext);
+            free(pPrev->pNext);
+            pPrev->pNext = pTmp;
             return;
-        }
-        pPrev = pCurrent;
-        pCurrent = pCurrent->pNext;
+         }
+         pPrev = pPrev->pNext;
     }
+    printf("Not found: %s\n", pszTask);
 }
 
 TODODATA* SearchByTask(const char* pszTask) {
-    TODODATA *pTmp = g_pHeadNode;
+    TODODATA *pTmp = g_HeadNode.pNext;
     while (pTmp != NULL) {
         if (strcmp(pszTask, pTmp->task) == 0) {
             printf("Found: [%p] %s, %s [%p]\n",
